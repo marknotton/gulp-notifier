@@ -37,28 +37,37 @@ function setup(project, options) {
 // Successes
 ////////////////////////////////////////////////////////////////////////////////
 
+var handles = [];
+
 function success(handle, extra) {
 
   var first = true;
+  var type = "Created";
+
+  if (handles.includes(handle)) {
+    type = "Updated";
+  }
+
+  handles.push(handle);
 
   if ( typeof extra == 'object') {
     extra.forEach(file => {
-      log(`${chalk.cyan("Created:")} ${chalk.green(file)}`);
+      log(`${chalk.cyan(type+":")} ${chalk.green(file)}`);
     })
     extra = false;
   }
 
   return notify({
     icon     : getIcon(),
-    subtitle    : projectname,
-    title : "Created <%= file.relative %>",
+    subtitle : projectname,
+    title    : type + " <%= file.relative %>",
     message  : function(file) {
 
       let filepath = path.relative(process.cwd(), file.path);
       if (typeof exclusions !== 'undefined' && filepath.includes(exclusions)) {
         return false;
       } else {
-        log(`${chalk.cyan("Created:")} ${chalk.green(filepath)}`);
+        log(`${chalk.cyan(type+":")} ${chalk.green(filepath)}`);
       }
 
       if (first == false) { return false; }
