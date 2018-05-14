@@ -15,9 +15,11 @@ const through  = require('through2'),
 module.exports.success  = success;
 module.exports.error    = error;
 module.exports.defaults = defaults;
+module.exports.logs     = logs;
 
 let cache  = false;
 let caches = [];
+let logged = [];
 let defaultMessage = 'Files compiled successfully';
 
 let options = {
@@ -26,6 +28,7 @@ let options = {
   extra      : undefined,
   suffix     : undefined,
   prefix     : undefined,
+  delay      : false,
   success    : 'https://i.imgur.com/G6fTWAs.png',
   error      : 'https://i.imgur.com/VsfiLjV.png',
   messages   : {
@@ -74,7 +77,14 @@ function success() {
   if ( typeof succesOptions.extra !== 'undefined') {
     var extra = typeof succesOptions.extra == 'object' ? succesOptions.extra : [succesOptions.extra];
     extra.forEach(file => {
-      log(`${chalk.cyan(logType+":")} ${chalk.green(file)}`);
+
+      var messageLog = `${chalk.cyan(logType+":")} ${chalk.green(file)}`;
+
+      if ( succesOptions.delay ) {
+        logged.push(messageLog)
+      } else {
+        log(messageLog);
+      }
     })
     succesOptions.extra = undefined;
   }
@@ -89,7 +99,14 @@ function success() {
       if (typeof succesOptions.exclusions !== 'undefined' && filepath.includes(succesOptions.exclusions)) {
         return false;
       } else {
-        log(`${chalk.cyan(logType+":")} ${chalk.green(filepath)}`);
+
+        var messageLog = `${chalk.cyan(logType+":")} ${chalk.green(filepath)}`;
+
+        if ( succesOptions.delay ) {
+          logged.push(messageLog)
+        } else {
+          log(messageLog);
+        }
       }
 
       if (first == false) { return false; }
@@ -131,6 +148,17 @@ function error(error) {
   // Prevents any watchers from stopping
   this.emit('end');
 
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Output all logged messages
+////////////////////////////////////////////////////////////////////////////////
+
+function logs() {
+  logged.forEach(message => {
+    log(message);
+  })
+  return logged;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
