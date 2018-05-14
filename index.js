@@ -12,68 +12,93 @@ const through  = require('through2'),
       fs       = require('fs'),
       notify   = require('gulp-notify');
 
-module.exports.success = success;
-module.exports.error   = error;
-module.exports.setup   = setup;
+module.exports.success  = success;
+module.exports.error    = error;
+module.exports.defaults = defaults;
 
-let successes   = undefined;
-let projectname = 'Project';
-let customIcon  = 'https://i.imgur.com/G6fTWAs.png';
-let cachedIcon  = false;
-let exclusions  = undefined;
+let cache  = false;
+let caches = [];
+let defaultMessage = 'Files compiled successfully';
+
+let options = {
+  project    : undefined,
+  exclusions : undefined,
+  extra      : undefined,
+  suffix     : undefined,
+  prefix     : undefined,
+  success    : 'https://i.imgur.com/G6fTWAs.png',
+  error      : 'https://i.imgur.com/VsfiLjV.png',
+  messages   : {
+    default  : defaultMessage
+  }
+};
 
 ////////////////////////////////////////////////////////////////////////////////
-// Setup
+// Define default settings
 ////////////////////////////////////////////////////////////////////////////////
 
-function setup(project, options) {
-  projectname = project || 'Project';
-  customIcon  = options["icon"];
-  exclusions  = options["exclusions"] || undefined;
-  successes   = options["successes"];
+function defaults(settings) {
+  options = Object.assign(options, settings);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Successes
 ////////////////////////////////////////////////////////////////////////////////
 
-var handles = [];
+function success() {
 
-function success(handle, extra) {
+  var args = [].slice.call(arguments);
+  let succesOptions = options;
+  let message = defaultMessage;
+
+	args.forEach(function(arg) {
+    switch(typeof arg) {
+      case 'object':
+        succesOptions = Object.assign(succesOptions, arg);
+      break;
+      case 'string':
+        message = succesOptions.messages[arg] || arg;
+      break;
+    }
+	});
 
   var first = true;
-  var type = "Created";
+  var logType = "Created";
 
-  if (handles.includes(handle)) {
-    type = "Updated";
+  if (caches.includes(message) && message !== defaultMessage) {
+    logType = "Updated";
   }
 
-  handles.push(handle);
+  caches.push(message);
 
-  if ( typeof extra == 'object') {
+  if ( typeof succesOptions.extra !== 'undefined') {
+    var extra = typeof succesOptions.extra == 'object' ? succesOptions.extra : [succesOptions.extra];
     extra.forEach(file => {
-      log(`${chalk.cyan(type+":")} ${chalk.green(file)}`);
+      log(`${chalk.cyan(logType+":")} ${chalk.green(file)}`);
     })
-    extra = false;
+    succesOptions.extra = undefined;
   }
 
   return notify({
-    icon     : getIcon(),
-    subtitle : projectname,
-    title    : type + " <%= file.relative %>",
+    icon     : _icon(),
+    subtitle : succesOptions.project,
+    title    : logType + " <%= file.relative %>",
     message  : function(file) {
 
       let filepath = path.relative(process.cwd(), file.path);
-      if (typeof exclusions !== 'undefined' && filepath.includes(exclusions)) {
+      if (typeof succesOptions.exclusions !== 'undefined' && filepath.includes(succesOptions.exclusions)) {
         return false;
       } else {
-        log(`${chalk.cyan(type+":")} ${chalk.green(filepath)}`);
+        log(`${chalk.cyan(logType+":")} ${chalk.green(filepath)}`);
       }
 
       if (first == false) { return false; }
       first = false;
 
-      return messages(handle, extra);
+      var prefix = typeof succesOptions.prefix !== 'undefined' ? succesOptions.prefix + ' ' : '';
+      var suffix = typeof succesOptions.suffix !== 'undefined' ? ' ' + succesOptions.suffix : '';
+
+      return prefix + message + suffix;
     }
   });
 }
@@ -95,8 +120,9 @@ function error(error) {
   const keyword = chalk.red.bgWhite;
 
   notify({
-    icon: "https://i.imgur.com/VsfiLjV.png",
-    title: `${projectname} : ${name}`,
+    icon: options.error,
+    title: name,
+    subtitle: options.project,
     message: `Line ${line} in ${file}`,
   }).write(error);
 
@@ -111,21 +137,22 @@ function error(error) {
 // Private
 ////////////////////////////////////////////////////////////////////////////////
 
-function getIcon() {
-  if (cachedIcon) { return cachedIcon }
+function _icon() {
+  if (cache) { return cache }
   try {
-  	fs.accessSync(path.resolve(customIcon))
-    return cachedIcon = customIcon;
+  	fs.accessSync(path.resolve(options.success))
+    return cache = options.success;
   } catch(e){
-    return cachedIcon = 'https://i.imgur.com/G6fTWAs.png';
+    return cache = 'https://i.imgur.com/G6fTWAs.png';
   }
 }
 
 
-function messages(handle, extra) {
+function _messages(message, suffix, prefix) {
 
-  var extra = extra && typeof extra !== 'undefined' ? ' ' + extra : '';
+  var prefix = typeof prefix !== 'undefined' ? prefix + ' ' : '';
+  var suffix = typeof suffix !== 'undefined' ? ' ' + suffix : '';
 
-  return successes[handle] + extra;
+  return prefix + message + suffix;
 
 }
