@@ -33,8 +33,8 @@ notifier.success('You precompiled the files', { project : 'My Project'})
 | extra      | Array or String| - | Manually add extra files to log out, regardless of whether they actually part of the stream |
 | prefix     | String | - | String to add before the notification message |
 | suffix     | String | - | String to add after the notification message |
-| success    | String | ![https://i.imgur.com/G6fTWAs.png](https://i.imgur.com/G6fTWAs.png =20x) | Icon to use on success messages. Can be relative to the project folder or an absolute URL |
-| error      | String | ![https://i.imgur.com/G6fTWAs.png](https://i.imgur.com/VsfiLjV.png =20x) | Icon to use on error messages. Can be relative to the project folder or an absolute URL |
+| success    | String | <img src="https://i.imgur.com/G6fTWAs.png" alt="Success" align="left" height="20" /> | Icon to use on success messages. Can be relative to the project folder or an absolute URL |
+| error      | String | <img src="https://i.imgur.com/VsfiLjV.png" alt="Success" align="left" height="20" /> | Icon to use on error messages. Can be relative to the project folder or an absolute URL |
 | messages   | String | Files compiled successfully | The message you want to display. This can be a shorthand name that references an object key defined in the defaults function (see below)   |
 
 ### Defaults
