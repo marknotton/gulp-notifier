@@ -1,6 +1,6 @@
 # Gulp Notifier
 
-Gulp success &amp; error notifications within streams.
+Gulp success and error notifications.
 
 ### Installation
 ```
@@ -23,7 +23,7 @@ gulp.task('someTask', () => {
 
 You can pass in a string or object of options. A string will be defined as the message or message shorthand.
 ```
-notifier.success('You precompiled the files', { project : 'My Project'})
+notifier.success('js', { project : 'My Project'})
 ```
 ### Options
 | Option | Type | Default | Details |
@@ -46,7 +46,6 @@ notifier.defaults({
   success : 'images/icon.png',
   exclusions:'.map',
   messages  : {
-    core    : 'Core script files ' + (combineJS ? 'precompiled' : (versioning ? 'versionised' : 'compiled')) + ' successfully',
     js      : 'Javascripts are all done!',
     sass    : 'Looking gooooood!'
   }
