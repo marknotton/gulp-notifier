@@ -47,11 +47,11 @@ function defaults(settings) {
 ////////////////////////////////////////////////////////////////////////////////
 // Successes
 ////////////////////////////////////////////////////////////////////////////////
-
 function success() {
 
+  logged = [];
   var args = [].slice.call(arguments);
-  let succesOptions = options;
+  let succesOptions = Object.assign({}, options);;
   let message = defaultMessage;
 
 	args.forEach(function(arg) {
@@ -65,8 +65,12 @@ function success() {
     }
 	});
 
-  var first = true;
-  var logType = "Created";
+  let first = true;
+  let logType = "Created";
+  let prefix = typeof succesOptions.prefix !== 'undefined' ? succesOptions.prefix + ' ' : '';
+  let suffix = typeof succesOptions.suffix !== 'undefined' ? ' ' + succesOptions.suffix : '';
+
+  message = prefix + message + suffix;
 
   if (caches.includes(message) && message !== defaultMessage) {
     logType = "Updated";
@@ -89,13 +93,17 @@ function success() {
     succesOptions.extra = undefined;
   }
 
+
+
   return notify({
     icon     : _icon(),
     subtitle : succesOptions.project,
     title    : logType + " <%= file.relative %>",
-    message  : function(file) {
+    message  : (file) => {
 
       let filepath = path.relative(process.cwd(), file.path);
+
+
       if (typeof succesOptions.exclusions !== 'undefined' && filepath.includes(succesOptions.exclusions)) {
         return false;
       } else {
@@ -112,10 +120,7 @@ function success() {
       if (first == false) { return false; }
       first = false;
 
-      var prefix = typeof succesOptions.prefix !== 'undefined' ? succesOptions.prefix + ' ' : '';
-      var suffix = typeof succesOptions.suffix !== 'undefined' ? ' ' + succesOptions.suffix : '';
-
-      return prefix + message + suffix;
+      return message;
     }
   });
 }

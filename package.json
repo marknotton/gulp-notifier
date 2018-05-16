@@ -1,6 +1,6 @@
 {
   "name": "gulp-notifier",
-  "version": "1.0.4-1",
+  "version": "1.0.4-2",
   "description": "Gulp success and error notifications",
   "main": "index.js",
   "scripts": {
