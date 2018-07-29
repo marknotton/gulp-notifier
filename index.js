@@ -28,6 +28,7 @@ let options = {
   extra      : undefined,
   suffix     : undefined,
   prefix     : undefined,
+  popups     : true,
   delay      : false,
   success    : 'https://i.imgur.com/G6fTWAs.png',
   error      : 'https://i.imgur.com/VsfiLjV.png',
@@ -93,8 +94,6 @@ function success() {
     succesOptions.extra = undefined;
   }
 
-
-
   return notify({
     icon     : _icon(),
     subtitle : succesOptions.project,
@@ -102,7 +101,6 @@ function success() {
     message  : (file) => {
 
       let filepath = path.relative(process.cwd(), file.path);
-
 
       if (typeof succesOptions.exclusions !== 'undefined' && filepath.includes(succesOptions.exclusions)) {
         return false;
@@ -120,7 +118,9 @@ function success() {
       if (first == false) { return false; }
       first = false;
 
-      return message;
+      if ( options.popups ) {
+        return message;
+      }
     }
   });
 }
@@ -141,12 +141,14 @@ function error(error) {
   const warning = chalk.white.bgRed;
   const keyword = chalk.red.bgWhite;
 
-  notify({
-    icon: options.error,
-    title: name,
-    subtitle: options.project,
-    message: `Line ${line} in ${file}`,
-  }).write(error);
+  if ( options.popups ) {
+    notify({
+      icon: options.error,
+      title: name,
+      subtitle: options.project,
+      message: `Line ${line} in ${file}`,
+    }).write(error);
+  }
 
   log(`${warning(" " +  task + " Error: ")} ${name} in ${file}: ${keyword(" line " + line + " ")} \n ${error.message ? error.message.replace(process.cwd(), '') : error.toString()}`);
 
