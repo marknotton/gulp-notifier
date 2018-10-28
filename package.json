@@ -1,6 +1,6 @@
 {
   "name": "gulp-notifier",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Gulp success and error notifications",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,7 @@
     "url": "git+https://github.com/marknotton/gulp-notifier.git"
   },
   "dependencies": {
+    "through2": "^2.0.3",
     "fancy-log": "^1.3.2",
     "chalk": "^2.4.1",
     "gulp-notify": "^3.2.0"
