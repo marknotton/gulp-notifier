@@ -65,3 +65,5 @@ gulp.task('someTask', () => {
   .on('end', () => { notifier.logs() })
 });
 ```
+
+You have two options with logs, both are booleans. First argument determines if the logger cache should be cleared after rendering the stored messages. The second will not render the logs, but still returns them as an array.

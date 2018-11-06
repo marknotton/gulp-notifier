@@ -21,6 +21,8 @@ module.exports.error    = error;
 module.exports.defaults = defaults;
 module.exports.logs     = logs;
 
+notify.logLevel(0);
+
 let cache  = false;
 let caches = [];
 let logged = [];
@@ -54,7 +56,6 @@ function defaults(settings) {
 // =============================================================================
 function success() {
 
-  logged = [];
   var args = [].slice.call(arguments);
   let succesOptions = Object.assign({}, options);;
   let message = defaultMessage;
@@ -87,7 +88,12 @@ function success() {
     var extra = typeof succesOptions.extra == 'object' ? succesOptions.extra : [succesOptions.extra];
     extra.forEach(file => {
 
-      var messageLog = `${chalk.cyan(logType+":")} ${chalk.green(file)}`;
+			var messageLog = `${chalk.magenta(logType+":")} ${chalk.green(file)}`;
+
+			if ( logType == 'Updated') {
+				messageLog = `${chalk.cyan(logType+":")} ${chalk.green(file)}`;
+			} else {
+			}
 
       if ( succesOptions.delay ) {
         logged.push(messageLog)
@@ -102,6 +108,7 @@ function success() {
     icon     : _icon(),
     subtitle : succesOptions.project,
     title    : logType + " <%= file.relative %>",
+		logLevel : 0,
     message  : (file) => {
 
       let filepath = path.relative(process.cwd(), file.path);
@@ -110,7 +117,11 @@ function success() {
         return false;
       } else {
 
-        var messageLog = `${chalk.cyan(logType+":")} ${chalk.green(filepath)}`;
+				var messageLog = `${chalk.magenta(logType+":")} ${chalk.green(filepath)}`;
+
+				if ( logType == 'Updated') {
+					messageLog = `${chalk.cyan(logType+":")} ${chalk.green(filepath)}`;
+				}
 
         if ( succesOptions.delay ) {
           logged.push(messageLog)
@@ -165,10 +176,20 @@ function error(error) {
 // Output all logged messages
 // =============================================================================
 
-function logs() {
-  logged.forEach(message => {
-    log(message);
-  })
+function logs(clear, output = true) {
+
+	if (output) {
+	  logged.forEach(message => {
+	    log(message);
+	  })
+	}
+
+	if ( clear == true ) {
+		var temp = logged;
+		logged = [];
+		return temp;
+	}
+
   return logged;
 }
 
