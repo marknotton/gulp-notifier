@@ -16,10 +16,12 @@ const through  = require('through2'),
       fs       = require('fs'),
       notify   = require('gulp-notify');
 
-module.exports.success  = success;
-module.exports.error    = error;
-module.exports.defaults = defaults;
-module.exports.logs     = logs;
+module.exports.success   = success;
+module.exports.error     = error;
+module.exports.defaults  = defaults;
+module.exports.renderLogs = renderLogs;
+module.exports.logs      = logs;
+module.exports.timestamp = timestamp;
 
 notify.logLevel(0);
 
@@ -88,15 +90,16 @@ function success() {
     var extra = typeof succesOptions.extra == 'object' ? succesOptions.extra : [succesOptions.extra];
     extra.forEach(file => {
 
-			var messageLog = `${chalk.magenta(logType+":")} ${chalk.green(file)}`;
+			var messageLog = `${chalk.magenta(logType+":")} ${chalk.green(file)} - ${chalk.yellow(message)}`;
 
 			if ( logType == 'Updated') {
-				messageLog = `${chalk.cyan(logType+":")} ${chalk.green(file)}`;
+				messageLog = `${chalk.cyan(logType+":")} ${chalk.green(file) } - ${chalk.yellow(message)}`;
 			} else {
+
 			}
 
       if ( succesOptions.delay ) {
-        logged.push(messageLog)
+        logged.push(timestamp(messageLog))
       } else {
         log(messageLog);
       }
@@ -108,7 +111,6 @@ function success() {
     icon     : _icon(),
     subtitle : succesOptions.project,
     title    : logType + " <%= file.relative %>",
-		logLevel : 0,
     message  : (file) => {
 
       let filepath = path.relative(process.cwd(), file.path);
@@ -117,14 +119,14 @@ function success() {
         return false;
       } else {
 
-				var messageLog = `${chalk.magenta(logType+":")} ${chalk.green(filepath)}`;
+				var messageLog = `${chalk.magenta(logType+":")} ${chalk.green(filepath)} - ${chalk.yellow(message)}`;
 
 				if ( logType == 'Updated') {
-					messageLog = `${chalk.cyan(logType+":")} ${chalk.green(filepath)}`;
+					messageLog = `${chalk.cyan(logType+":")} ${chalk.green(filepath)} - ${chalk.yellow(message)}`;
 				}
 
         if ( succesOptions.delay ) {
-          logged.push(messageLog)
+          logged.push(timestamp(messageLog))
         } else {
           log(messageLog);
         }
@@ -172,11 +174,15 @@ function error(error) {
 
 }
 
+function timestamp(message) {
+	return `[${(new Date()).toTimeString().substr(0,8)}] ${message}`;
+}
+
 // =============================================================================
 // Output all logged messages
 // =============================================================================
 
-function logs(clear, output = true) {
+function logs(output = true, clear = false) {
 
 	if (output) {
 	  logged.forEach(message => {
@@ -184,13 +190,19 @@ function logs(clear, output = true) {
 	  })
 	}
 
-	if ( clear == true ) {
+	if (clear) {
 		var temp = logged;
 		logged = [];
 		return temp;
 	}
 
   return logged;
+}
+
+function renderLogs(logs) {
+	logs.forEach(message => {
+		console.log(message);
+	})
 }
 
 // =============================================================================
