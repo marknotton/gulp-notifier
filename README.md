@@ -1,17 +1,19 @@
-# Gulp Notifier
+# Notifier
 
-Gulp success and error notifications.
+![Made For NPM](https://img.shields.io/badge/Made%20for-NPM-orange.svg) ![Made For Gulp](https://img.shields.io/badge/Made%20for-Gulp-red.svg)
 
-### Installation
+Manage CLI and popup notification messages.
+
+## Installation
 ```
-npm i gulp-notifier --save
+npm i @marknotton/notifier --save-dev
 ```
 ```js
-const notifier = require('gulp-notifier');
+const notifier = require('@marknotton/notifier');
 ```
 
-### Usage
-```
+## Usage
+```js
 gulp.task('someTask', () => {
   return gulp.src([...])
   .pipe(plumber({errorHandler: notifier.error }))
@@ -21,29 +23,31 @@ gulp.task('someTask', () => {
 });
 ```
 
-You can pass in a string or object of options. A string will be defined as the message or message shorthand.
-```
-notifier.success('js', { project : 'My Project'})
-```
-### Options
+## Options
 | Option | Type | Default | Details |
 |--|--|--|--|
 | project    | String | - | Project name. Will appear as a subheading |
 | exclusions | String | - | Files that match any part of this string will be excluded from any notification |
-| extra      | Array or String| - | Manually add extra files to log out, regardless of whether they actually part of the stream |
 | prefix     | String | - | String to add before the notification message |
 | suffix     | String | - | String to add after the notification message |
 | popups     | Bool   | true | Prevent popups from showing. Console logs will still be rendered. Remote servers won't need popups and may even cause errors. |
-| delay      | Bool   | false | If set to ```true```, all console messages will be logged into a array. All logs can then be triggers using the logs function   |
 | success    | String | <img src="https://i.imgur.com/G6fTWAs.png" alt="Success" align="left" height="20" /> | Icon to use on success messages. Can be relative to the project folder or an absolute URL |
 | error      | String | <img src="https://i.imgur.com/VsfiLjV.png" alt="Success" align="left" height="20" /> | Icon to use on error messages. Can be relative to the project folder or an absolute URL |
 | messages   | String | Files compiled successfully | The message you want to display. This can be a shorthand name that references an object key defined in the defaults function (see below)   |
+| extra      | Array/String| - | Manually add extra files to log out, regardless of whether they are  actually part of the stream |
 
-### Defaults
+A string will be defined as the message or message shorthand.
 
-You can define all your own default options outside of the stream.
+```js
+notifier.success('js', { project : 'My Project', ...})
 ```
-notifier.defaults({
+Notice the use of a shorthand name as the first parameter. This will look for the keys in the default settings object. So you can list all your messages in one place.
+
+## Defining your default settings
+
+You can preset the above options with the settings function. This will be refereed as your default options for every notifier instance.
+```
+notifier.settings({
   project : 'My Project,
   success : 'images/icon.png',
   exclusions:'.map',
@@ -53,17 +57,3 @@ notifier.defaults({
   }
 });
 ```
-
-### Logs
-
-The logs function will log out all previously saved console messages. Designed to be used in conjunction with Gulps ```on end``` feature.
-
-```
-gulp.task('someTask', () => {
-  return gulp.src([...])
-  .pipe(notifier.success())
-  .on('end', () => { notifier.logs() })
-});
-```
-
-You have two options with logs, both are booleans. First argument determines if the logger cache should be cleared after rendering the stored messages. The second will not render the logs, but still returns them as an array.

@@ -1,7 +1,7 @@
 {
-  "name": "gulp-notifier",
-  "version": "1.0.6",
-  "description": "Gulp success and error notifications",
+  "name": "@marknotton/notifier",
+  "version": "1.1.0",
+  "description": "Manage CLI and popup notifications messages.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,13 +11,10 @@
     "url": "git+https://github.com/marknotton/gulp-notifier.git"
   },
   "dependencies": {
-    "through2": "^2.0.3",
-    "fancy-log": "^1.3.2",
-    "chalk": "^2.4.1",
-    "gulp-notify": "^3.2.0"
+		"@marknotton/lumberjack": "^1.1.0",
+		"gulp-notify": "^3.2.0"
   },
   "keywords": [
-    "gulp",
     "notifications",
     "notify"
   ],
