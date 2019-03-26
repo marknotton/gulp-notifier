@@ -31,8 +31,8 @@ let options = {
   suffix     : undefined,
   prefix     : undefined,
   popups     : true,
-  success    : 'https://i.imgur.com/G6fTWAs.png',
-  error      : 'https://i.imgur.com/VsfiLjV.png',
+  success    : path.join(__dirname, 'assets/success.png'),
+  error      : path.join(__dirname, 'assets/error.png'),
   messages   : {
     default  : defaultMessage
   }
