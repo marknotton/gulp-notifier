@@ -12,7 +12,7 @@
 const path     = require('path'),
       fs       = require('fs'),
       notify   = require('gulp-notify'),
-			log      = require('@marknotton/lumberjack');
+      log      = require('@marknotton/lumberjack');
 
 module.exports.success    = success;
 module.exports.error      = error;
@@ -31,8 +31,8 @@ let options = {
   suffix     : undefined,
   prefix     : undefined,
   popups     : true,
-  success    : 'https://i.imgur.com/G6fTWAs.png',
-  error      : 'https://i.imgur.com/VsfiLjV.png',
+  success    : path.join(__dirname, 'assets/success.png'),
+  error      : path.join(__dirname, 'assets/error.png'),
   messages   : {
     default  : defaultMessage
   }
@@ -55,18 +55,18 @@ function success() {
   let succesOptions = Object.assign({}, options);;
   let message = defaultMessage;
 
-	if ( args.length ) {
-		args.forEach(function(arg) {
-	    switch(typeof arg) {
-	      case 'object':
-	        succesOptions = Object.assign(succesOptions, arg);
-	      break;
-	      case 'string':
-	        message = succesOptions.messages[arg] || arg;
-	      break;
-	    }
-		});
-	}
+  if ( args.length ) {
+    args.forEach(function(arg) {
+      switch(typeof arg) {
+        case 'object':
+          succesOptions = Object.assign(succesOptions, arg);
+        break;
+        case 'string':
+          message = succesOptions.messages[arg] || arg;
+        break;
+      }
+    });
+  }
 
   let first = true;
   let logType = "Created";
@@ -84,7 +84,7 @@ function success() {
   if ( typeof succesOptions.extra !== 'undefined') {
     var extra = typeof succesOptions.extra == 'object' ? succesOptions.extra : [succesOptions.extra];
     extra.forEach(file => {
-			log(logType, file, message);
+      log(logType, file, message);
     })
     succesOptions.extra = undefined;
   }
@@ -136,9 +136,9 @@ function error(error) {
     }).write(error);
   }
 
-	let message = `${name} in ${file}: ${" line " + line + " "} \n ${error.message ? error.message.replace(process.cwd(), '') : error.toString()}`
+  let message = `${name} in ${file}: ${" line " + line + " "} \n ${error.message ? error.message.replace(process.cwd(), '') : error.toString()}`
 
-	log(task + " Error", message)
+  log(task + " Error", message)
 
   // Prevents any watchers from stopping
   this.emit('end');
@@ -152,7 +152,7 @@ function error(error) {
 function _icon() {
   if (cache) { return cache }
   try {
-  	fs.accessSync(path.resolve(options.success))
+    fs.accessSync(path.resolve(options.success))
     return cache = options.success;
   } catch(e){
     return cache = 'https://i.imgur.com/G6fTWAs.png';
