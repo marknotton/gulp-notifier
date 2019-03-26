@@ -17,7 +17,7 @@ const notifier = require('@marknotton/notifier');
 gulp.task('someTask', () => {
   return gulp.src([...])
   .pipe(plumber({errorHandler: notifier.error }))
-  .pipe(concat('ccombined.js))
+  .pipe(concat('ccombined.js'))
   .pipe(gulp.dest('/some/location/'))
   .pipe(notifier.success())
 });
