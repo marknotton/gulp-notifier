@@ -31,7 +31,7 @@ try {
     var successIocn = './icon.png';
   }
 } catch(err) {
-  var successIocn = 'https://i.imgur.com/G6fTWAs.png';
+  var successIocn = path.join(__dirname, 'assets/success.png');
 }
 
 let packageJson = path.resolve(process.cwd(), '');
@@ -54,7 +54,7 @@ let options = {
   prefix     : undefined,
   popups     : "ENVIRONMENT" in process.env && process.env.ENVIRONMENT == 'dev',
   success    : successIocn,
-  error      : 'https://i.imgur.com/VsfiLjV.png',
+  error      : path.join(__dirname, 'assets/error.png'),
   messages   : {
     default  : defaultMessage
   }
