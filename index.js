@@ -12,7 +12,7 @@
 const path     = require('path'),
       fs       = require('fs'),
       notify   = require('gulp-notify'),
-      log      = require('@marknotton/lumberjack');
+			log      = require('@marknotton/lumberjack');
 
 module.exports.success    = success;
 module.exports.error      = error;
@@ -24,15 +24,37 @@ let cache  = false;
 let caches = [];
 let defaultMessage = 'Files compiled successfully';
 
+// Look for an 'icon.png' file in the root of this project to use as a 'success' 
+// image if one isn't manually defined.
+try {
+  if (fs.existsSync('./icon.png')) {
+    var successIocn = './icon.png';
+  }
+} catch(err) {
+  var successIocn = 'https://i.imgur.com/G6fTWAs.png';
+}
+
+let packageJson = path.resolve(process.cwd(), '');
+
+if (!packageJson.endsWith('package.json')) {
+  packageJson = path.join(packageJson, 'package.json');
+}
+
+if (fs.existsSync(packageJson)) {
+  let pkg = JSON.parse(fs.readFileSync(packageJson));
+
+  var projectNae = pkg.name.replace(/-/g," ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+} 
+
 let options = {
-  project    : undefined,
-  exclusions : undefined,
+  project    : projectNae || undefined,
+  exclusions : '.map',
   extra      : undefined,
   suffix     : undefined,
   prefix     : undefined,
-  popups     : true,
-  success    : path.join(__dirname, 'assets/success.png'),
-  error      : path.join(__dirname, 'assets/error.png'),
+  popups     : "ENVIRONMENT" in process.env && process.env.ENVIRONMENT == 'dev',
+  success    : successIocn,
+  error      : 'https://i.imgur.com/VsfiLjV.png',
   messages   : {
     default  : defaultMessage
   }
@@ -55,18 +77,18 @@ function success() {
   let succesOptions = Object.assign({}, options);;
   let message = defaultMessage;
 
-  if ( args.length ) {
-    args.forEach(function(arg) {
-      switch(typeof arg) {
-        case 'object':
-          succesOptions = Object.assign(succesOptions, arg);
-        break;
-        case 'string':
-          message = succesOptions.messages[arg] || arg;
-        break;
-      }
-    });
-  }
+	if ( args.length ) {
+		args.forEach(function(arg) {
+	    switch(typeof arg) {
+	      case 'object':
+	        succesOptions = Object.assign(succesOptions, arg);
+	      break;
+	      case 'string':
+	        message = succesOptions.messages[arg] || arg;
+	      break;
+	    }
+		});
+	}
 
   let first = true;
   let logType = "Created";
@@ -84,7 +106,7 @@ function success() {
   if ( typeof succesOptions.extra !== 'undefined') {
     var extra = typeof succesOptions.extra == 'object' ? succesOptions.extra : [succesOptions.extra];
     extra.forEach(file => {
-      log(logType, file, message);
+			log(logType, file, message);
     })
     succesOptions.extra = undefined;
   }
@@ -136,9 +158,9 @@ function error(error) {
     }).write(error);
   }
 
-  let message = `${name} in ${file}: ${" line " + line + " "} \n ${error.message ? error.message.replace(process.cwd(), '') : error.toString()}`
+	let message = `${name} in ${file}: ${" line " + line + " "} \n ${error.message ? error.message.replace(process.cwd(), '') : error.toString()}`
 
-  log(task + " Error", message)
+	log(task + " Error", message)
 
   // Prevents any watchers from stopping
   this.emit('end');
@@ -152,7 +174,7 @@ function error(error) {
 function _icon() {
   if (cache) { return cache }
   try {
-    fs.accessSync(path.resolve(options.success))
+  	fs.accessSync(path.resolve(options.success))
     return cache = options.success;
   } catch(e){
     return cache = 'https://i.imgur.com/G6fTWAs.png';

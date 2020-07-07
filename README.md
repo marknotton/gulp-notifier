@@ -17,7 +17,7 @@ const notifier = require('@marknotton/notifier');
 gulp.task('someTask', () => {
   return gulp.src([...])
   .pipe(plumber({errorHandler: notifier.error }))
-  .pipe(concat('ccombined.js'))
+  .pipe(concat('ccombined.js))
   .pipe(gulp.dest('/some/location/'))
   .pipe(notifier.success())
 });
@@ -26,12 +26,12 @@ gulp.task('someTask', () => {
 ## Options
 | Option | Type | Default | Details |
 |--|--|--|--|
-| project    | String | - | Project name. Will appear as a subheading |
-| exclusions | String | - | Files that match any part of this string will be excluded from any notification |
+| project    | String | Package.json 'name' | Project name. Will appear as a subheading. |
+| exclusions | String | '.map' | Files that match any part of this string will be excluded from any notification |
 | prefix     | String | - | String to add before the notification message |
 | suffix     | String | - | String to add after the notification message |
-| popups     | Bool   | true | Prevent popups from showing. Console logs will still be rendered. Remote servers won't need popups and may even cause errors. |
-| success    | String | <img src="https://i.imgur.com/G6fTWAs.png" alt="Success" align="left" height="20" /> | Icon to use on success messages. Can be relative to the project folder or an absolute URL |
+| popups     | Bool   | true | Prevent popups from showing. Console logs will still be rendered. Defaults to false on non 'dev' environments. |
+| success    | String | <img src="https://i.imgur.com/G6fTWAs.png" alt="Success" align="left" height="20" /> | Icon to use on success messages. Can be relative to the project folder or an absolute URL. An attempt will be made to look for a 'icon.png' in your projects root directly. |
 | error      | String | <img src="https://i.imgur.com/VsfiLjV.png" alt="Success" align="left" height="20" /> | Icon to use on error messages. Can be relative to the project folder or an absolute URL |
 | messages   | String | Files compiled successfully | The message you want to display. This can be a shorthand name that references an object key defined in the defaults function (see below)   |
 | extra      | Array/String| - | Manually add extra files to log out, regardless of whether they are  actually part of the stream |
@@ -52,7 +52,7 @@ notifier.settings({
   success : 'images/icon.png',
   exclusions:'.map',
   messages  : {
-    js      : 'Javascripts are all done!',
+    js      : 'Javascript files compiled!',
     sass    : 'Looking gooooood!'
   }
 });

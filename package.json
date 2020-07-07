@@ -1,6 +1,6 @@
 {
   "name": "@marknotton/notifier",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Manage CLI and popup notifications messages.",
   "main": "index.js",
   "scripts": {
