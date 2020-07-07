@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marknotton/gulp-notifier.git"
+    "url": "git+https://github.com/marknotton/notifier.git"
   },
   "dependencies": {
 		"@marknotton/lumberjack": "^1.1.0",
@@ -21,7 +21,7 @@
   "author": "Mark Notton",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/marknotton/gulp-notifier/issues"
+    "url": "https://github.com/marknotton/notifier/issues"
   },
-  "homepage": "https://github.com/marknotton/gulp-notifier"
+  "homepage": "https://github.com/marknotton/notifier"
 }
