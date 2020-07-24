@@ -1,6 +1,6 @@
 {
   "name": "@marknotton/notifier",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Manage CLI and popup notifications messages.",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,8 @@
   },
   "dependencies": {
 		"@marknotton/lumberjack": "^1.1.0",
-		"gulp-notify": "^3.2.0"
+		"gulp-notify": "^3.2.0",
+    "through2": "^4.0.2"
   },
   "keywords": [
     "notifications",

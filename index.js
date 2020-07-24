@@ -12,7 +12,8 @@
 const path     = require('path'),
       fs       = require('fs'),
       notify   = require('gulp-notify'),
-			log      = require('@marknotton/lumberjack');
+      log      = require('@marknotton/lumberjack'),
+      through  = require('through2');
 
 module.exports.success    = success;
 module.exports.error      = error;
@@ -68,13 +69,14 @@ function settings(settings) {
   options = Object.assign(options, settings);
 }
 
+
 // =============================================================================
 // Successes
 // =============================================================================
 function success() {
 
   var args = [].slice.call(arguments);
-  let succesOptions = Object.assign({}, options);;
+  let succesOptions = Object.assign({}, options);
   let message = defaultMessage;
 
 	if ( args.length ) {
@@ -85,6 +87,9 @@ function success() {
 	      break;
 	      case 'string':
 	        message = succesOptions.messages[arg] || arg;
+        break;
+        case 'boolean':
+	        logFiles = arg;
 	      break;
 	    }
 		});
@@ -111,6 +116,17 @@ function success() {
     succesOptions.extra = undefined;
   }
 
+  if ( !succesOptions.popups ) {
+    let stream = through.obj(function (file, enc, cb) {
+      let filepath = path.relative(process.cwd(), file.path)
+      if ( !filepath.includes(succesOptions.exclusions) ) {
+        log(logType, filepath, message);
+      }
+      cb(null);
+    })
+    return stream;
+  }
+
   return notify({
     icon     : _icon(),
     subtitle : succesOptions.project,
@@ -128,11 +144,10 @@ function success() {
       if (first == false) { return false; }
       first = false;
 
-      if ( options.popups ) {
-        return message;
-      }
+      return message
     }
   });
+
 }
 
 // =============================================================================
