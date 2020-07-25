@@ -116,12 +116,14 @@ function success() {
     succesOptions.extra = undefined;
   }
 
-  if ( !succesOptions.popups ) {
+  if ( !succesOptions.popups  ) {
     let stream = through.obj(function (file, enc, cb) {
-      let filepath = path.relative(process.cwd(), file.path)
-      if ( !filepath.includes(succesOptions.exclusions) ) {
-        log(logType, filepath, message);
-      }
+      if ( file.path ) {
+        let filepath = path.relative(process.cwd(), file.path)
+        if ( !filepath.includes(succesOptions.exclusions) ) {
+          log(logType, filepath, message);
+        }
+      } 
       cb(null);
     })
     return stream;
